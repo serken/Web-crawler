@@ -2,32 +2,49 @@ require 'open-uri'
 require 'nokogiri'
 class Crawler
 
-  def get_html(url)
-    html = Nokogiri::HTML(open(url))
+  def get_html(uri)
+    html = Nokogiri::HTML(open(uri))
     html.encoding = 'utf-8'
-    html
+    {:html => html,:uri => uri }
   end
 
-  def files_save_from_url(url)
+  def files_save_from_url(uri)
     pages = []
-    pages << get_html(url)
-    pages += get_subhtml(pages.first)
-    FileUtils::mkdir_p 'tmp/'+url.hostname
+    index = get_html(uri)
+    pages << index[:html]
+    pages += get_subhtml(index)
+    FileUtils::mkdir_p 'tmp/'+uri.hostname
     pages.each_with_index do |page, i|
-      File.open("tmp/"+url.hostname+"/"+i.to_s+".html", 'w') { |file| file.write page }
+      File.open("tmp/"+uri.hostname+"/"+i.to_s+".html", 'w') { |file| file.write page }
     end
   end
 
   def get_subhtml(html)
     htmls = []
-    html.xpath("//a/@href").each do |new_html|
+    html[:html].xpath("//a/@href").each do |new_html|
       begin
-        htmls << get_html(new_html.value)
+        htmls << get_html(check_link(html[:uri], new_html.value))[:html]
       rescue Exception => e
         htmls << e
       end
     end
     htmls
+  end
+
+  def check_link (uri,url)
+    new_url = url
+    if url.match(/^#{uri.hostname}/)
+      new_url = "http://"+url
+    else
+      if url.match(/^\//)
+        new_url = "http://"+uri.hostname+url
+      else
+        if url.match(/^http:\/\//).nil?
+        new_url = "http://"+uri.hostname+"/"+url
+        end
+      end
+    end
+    new_url
   end
 
 end

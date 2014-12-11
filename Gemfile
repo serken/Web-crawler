@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+source 'https://rails-assets.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
@@ -16,6 +17,9 @@ gem 'prawn'
 
 #Nokogiri
 gem 'nokogiri'
+
+#bootstrap
+gem 'rails-assets-bootstrap-sass-official'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

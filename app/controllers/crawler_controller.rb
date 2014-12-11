@@ -1,4 +1,4 @@
-class CrawlerController < ActionController::Base
+class CrawlerController < ApplicationController
 
   def index
 

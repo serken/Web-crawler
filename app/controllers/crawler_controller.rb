@@ -6,9 +6,10 @@ class CrawlerController < ActionController::Base
 
   def fetch
     uri = URI(params[:search])
+    #uri = params[:search]
     crawler = Crawler.new
-    html = crawler.get_html(uri)
-    render :text => html
+    html = crawler.files_save_from_url(uri)
+    render :text => "success"
   end
 
 end

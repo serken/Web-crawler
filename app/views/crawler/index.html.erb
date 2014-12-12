@@ -1,4 +1,7 @@
 <div style="width:50%; margin: 0 auto; text-align: center;padding-top: 20%;">
+  <% if flash[:notice] %>
+  <div class="notice"><%= flash[:notice]%></div>
+  <% end %>
 <form accept-charset="UTF-8" action="/" method="post">
   <input type="text" name="search" class="input-large search-query">
   <button class="btn btn-large btn-primary" type="submit">Grab!</button>

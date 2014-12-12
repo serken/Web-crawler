@@ -12,23 +12,38 @@ class Crawler
 
   def files_save_from_url(uri)
     pages = []
+    links = []
     index = get_html(uri)
     pages << index[:html]
-    pages += get_subhtml(index)
-    FileUtils::mkdir_p 'tmp/'+uri.hostname
+    links << index[:uri]
+    subhtmls = get_subhtml(index)
+    pages += subhtmls[:html]
+    links += subhtmls[:links]
+    save_to_tar(pages,uri.hostname)
+    save_to_pdf(links)
+  end
+
+  def save_to_tar(pages,name)
+    FileUtils::mkdir_p 'tmp/'+name
     pages.each_with_index do |page, i|
-      File.open("tmp/#{uri.hostname}/#{i.to_s}.html", 'w') { |file| file.write page }
+      File.open("tmp/#{name}/#{i.to_s}.html", 'w') { |file| file.write page }
     end
-    Tar::External.new("tmp/#{uri.hostname}.tar","tmp/#{uri.hostname}/*.html", 'gzip') if !File.exist?("tmp/#{uri.hostname}.tar.gz")
+    Tar::External.new("tmp/#{name}.tar","tmp/#{name}/*.html", 'gzip') if !File.exist?("tmp/#{name}.tar.gz")
+  end
+
+  def save_to_pdf(links)
+
   end
 
   def get_subhtml(html)
-    htmls = []
+    htmls = {:html => [],:links => []}
     html[:html].xpath("//a/@href").each do |new_html|
       begin
-        htmls << get_html(check_link(html[:uri], new_html.value))[:html]
+        htmls[:links] << check_link(html[:uri], new_html.value)
+        htmls[:html] << get_html(htmls[:links].last)[:html]
       rescue Exception => e
-        htmls << e
+        htmls[:links] << e
+        htmls[:html] << e
       end
     end
     htmls
@@ -47,7 +62,7 @@ class Crawler
         end
       end
     end
-    new_url
+    URI(new_url)
   end
 
 end

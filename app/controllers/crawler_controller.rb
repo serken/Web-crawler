@@ -9,9 +9,14 @@ class CrawlerController < ApplicationController
   end
 
   def fetch
+    begin
     uri = URI(params[:search])
     Crawler.new.files_save_from_url(uri)
     render :partial => 'download', :locals => {:name => uri.hostname}
+    rescue Exception => e
+      flash[:notice] = "Bad url. Try another"
+      redirect_to root_path
+    end
   end
 
 end

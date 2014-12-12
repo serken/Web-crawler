@@ -1,5 +1,7 @@
 require 'open-uri'
 require 'nokogiri'
+require 'archive/tar/external'
+include Archive
 class Crawler
 
   def get_html(uri)
@@ -15,8 +17,9 @@ class Crawler
     pages += get_subhtml(index)
     FileUtils::mkdir_p 'tmp/'+uri.hostname
     pages.each_with_index do |page, i|
-      File.open("tmp/"+uri.hostname+"/"+i.to_s+".html", 'w') { |file| file.write page }
+      File.open("tmp/#{uri.hostname}/#{i.to_s}.html", 'w') { |file| file.write page }
     end
+    Tar::External.new("tmp/#{uri.hostname}.tar","tmp/#{uri.hostname}/*.html", 'gzip')
   end
 
   def get_subhtml(html)

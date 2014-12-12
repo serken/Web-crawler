@@ -12,6 +12,9 @@ gem 'mysql2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
+#Archive tar
+gem 'archive-tar-external'
+
 #PDF
 gem 'prawn'
 

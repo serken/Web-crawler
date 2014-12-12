@@ -19,7 +19,7 @@ class Crawler
     pages.each_with_index do |page, i|
       File.open("tmp/#{uri.hostname}/#{i.to_s}.html", 'w') { |file| file.write page }
     end
-    Tar::External.new("tmp/#{uri.hostname}.tar","tmp/#{uri.hostname}/*.html", 'gzip')
+    Tar::External.new("tmp/#{uri.hostname}.tar","tmp/#{uri.hostname}/*.html", 'gzip') if !File.exist?("tmp/#{uri.hostname}.tar.gz")
   end
 
   def get_subhtml(html)

@@ -32,7 +32,8 @@ class Crawler
   end
 
   def save_to_pdf(links)
-
+    kit = PDFKit.new(links.first.to_s)
+    kit.to_file("tmp/#{links.first.hostname}.pdf")
   end
 
   def get_subhtml(html)

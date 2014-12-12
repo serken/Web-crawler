@@ -16,7 +16,8 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'archive-tar-external'
 
 #PDF
-gem 'prawn'
+gem 'wkhtmltopdf-binary'
+gem 'pdfkit'
 
 #Nokogiri
 gem 'nokogiri'
